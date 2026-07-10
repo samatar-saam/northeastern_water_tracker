@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+// ✅ Import logo from your assets folder (relative path)
+import logo from '../assets/images/logo.png';   // adjust path if component is deeper
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,7 +15,7 @@ const Navbar = () => {
     { name: 'Map', href: '#map' },
     { name: 'Communities', href: '#communities' },
     { name: 'About Us', href: '#about' },
-    { name: 'Service', href: '#service' },   // <-- Service page added
+    { name: 'Service', href: '#service' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -64,18 +66,13 @@ const Navbar = () => {
 
             {/* ---- Left: Logo + Brand ---- */}
             <div className="flex items-center gap-3 flex-shrink-0">
-              {/* Logo image – relative path to assets/images/logo.png */}
-              <div className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-xl shadow-md shadow-blue-500/20 overflow-hidden">
+              {/* Logo image – imported from assets */}
+              <div className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-xl shadow-md shadow-blue-500/20 overflow-hidden bg-white">
                 <img
-                  src="/assets/images/logo.png"   // <-- relative path from public folder
+                  src={logo}   // <-- using imported variable
                   alt="North Eastern Community Water Tracker logo"
                   className="w-full h-full object-cover"
                 />
-                {/* 
-                  If your assets folder is inside src/, import the image instead:
-                  import logo from './assets/images/logo.png';
-                  and use: <img src={logo} alt="Logo" className="w-full h-full object-cover" />
-                */}
               </div>
               <div className="leading-tight">
                 <span className="block font-poppins font-bold text-[#0b1e33] text-sm md:text-base tracking-tight">
