@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-// ✅ Import logo from your assets folder (relative path)
-import logo from '../assets/images/logo.png';   // adjust path if component is deeper
+import { NavLink } from 'react-router-dom';  // ✅ import NavLink
+import logo from '../assets/images/logo.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState('Home');
   const [isLoginDropdownOpen, setIsLoginDropdownOpen] = useState(false);
 
+  // ✅ Define routes (not hash links)
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Water Points', href: '#water-points' },
-    { name: 'Reports', href: '#reports' },
-    { name: 'Map', href: '#map' },
-    { name: 'Communities', href: '#communities' },
-    { name: 'About Us', href: '#about' },
-    { name: 'Service', href: '#service' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'Home', path: '/' },
+    { name: 'Water Points', path: '/water-points' },
+    { name: 'Reports', path: '/reports' },
+    { name: 'Map', path: '/map' },
+    { name: 'Communities', path: '/communities' },
+    { name: 'About Us', path: '/about' },
+    { name: 'Service', path: '/service' },
+    { name: 'Contact', path: '/contact' },
   ];
 
-  // Scroll effect
+  // Scroll effect (unchanged)
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -28,7 +28,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close dropdowns on escape
+  // Close dropdowns on escape (unchanged)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -40,8 +40,8 @@ const Navbar = () => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleLinkClick = (name) => {
-    setActiveLink(name);
+  // Close menus on link click
+  const handleLinkClick = () => {
     setIsMobileMenuOpen(false);
     setIsLoginDropdownOpen(false);
   };
@@ -66,10 +66,9 @@ const Navbar = () => {
 
             {/* ---- Left: Logo + Brand ---- */}
             <div className="flex items-center gap-3 flex-shrink-0">
-              {/* Logo image – imported from assets */}
               <div className="flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-xl shadow-md shadow-blue-500/20 overflow-hidden bg-white">
                 <img
-                  src={logo}   // <-- using imported variable
+                  src={logo}
                   alt="North Eastern Community Water Tracker logo"
                   className="w-full h-full object-cover"
                 />
@@ -90,30 +89,32 @@ const Navbar = () => {
               aria-label="Main navigation"
             >
               {navLinks.map((link) => (
-                <a
+                <NavLink
                   key={link.name}
-                  href={link.href}
-                  onClick={() => handleLinkClick(link.name)}
-                  className={`
+                  to={link.path}
+                  onClick={handleLinkClick}
+                  className={({ isActive }) => `
                     relative px-3 py-2 text-sm font-medium transition-all duration-300 ease-out rounded-lg
                     hover:text-[#1565C0] group
-                    ${activeLink === link.name ? 'text-[#1565C0]' : 'text-[#1e293b]'}
+                    ${isActive ? 'text-[#1565C0]' : 'text-[#1e293b]'}
                   `}
-                  aria-current={activeLink === link.name ? 'page' : undefined}
+                  // Use `end` for exact match on home
+                  end={link.path === '/'}
+                  aria-current={({ isActive }) => isActive ? 'page' : undefined}
                 >
                   {link.name}
                   {/* Underline indicator – active & hover */}
                   <span
-                    className={`
+                    className={({ isActive }) => `
                       absolute left-1/2 -bottom-1 h-0.5 bg-[#1565C0] rounded-full transition-all duration-300 ease-out
-                      ${activeLink === link.name
+                      ${isActive
                         ? 'w-5 -translate-x-1/2 opacity-100'
                         : 'w-0 -translate-x-1/2 opacity-0 group-hover:w-5 group-hover:opacity-100'
                       }
                     `}
                     aria-hidden="true"
                   />
-                </a>
+                </NavLink>
               ))}
             </nav>
 
@@ -133,28 +134,28 @@ const Navbar = () => {
               {/* Dropdown menu */}
               {isLoginDropdownOpen && (
                 <div
-                  className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-[#f0f2f5] py-1.5 z-10 animate-fadeIn"
+                  className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-[#f0f2f5] py-1.5 z-10"
                   role="menu"
                   aria-label="Login options"
                 >
-                  <a
-                    href="#user-login"
-                    onClick={() => handleLinkClick('User Login')}
+                  <NavLink
+                    to="/user-login"
+                    onClick={handleLinkClick}
                     className="block px-4 py-2.5 text-sm text-[#1e293b] hover:bg-[#f1f5f9] transition-colors duration-150"
                     role="menuitem"
                   >
                     <i className="fas fa-user mr-2 text-[#1565C0] w-4 text-center" aria-hidden="true"></i>
                     User Login
-                  </a>
-                  <a
-                    href="#admin-login"
-                    onClick={() => handleLinkClick('Admin Login')}
+                  </NavLink>
+                  <NavLink
+                    to="/admin-login"
+                    onClick={handleLinkClick}
                     className="block px-4 py-2.5 text-sm text-[#1e293b] hover:bg-[#f1f5f9] transition-colors duration-150"
                     role="menuitem"
                   >
                     <i className="fas fa-user-shield mr-2 text-[#1565C0] w-4 text-center" aria-hidden="true"></i>
                     Admin Login
-                  </a>
+                  </NavLink>
                 </div>
               )}
             </div>
@@ -191,26 +192,26 @@ const Navbar = () => {
           <div className="bg-white/95 backdrop-blur-md border-t border-[#f0f2f5] px-4 py-5 shadow-lg shadow-black/5">
             <nav className="flex flex-col gap-1" aria-label="Mobile main navigation">
               {navLinks.map((link) => (
-                <a
+                <NavLink
                   key={link.name}
-                  href={link.href}
-                  onClick={() => handleLinkClick(link.name)}
-                  className={`
+                  to={link.path}
+                  onClick={handleLinkClick}
+                  className={({ isActive }) => `
                     px-4 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200
-                    ${activeLink === link.name
+                    ${isActive
                       ? 'text-[#1565C0] bg-[#1565C0]/8'
                       : 'text-[#1e293b] hover:bg-[#f1f5f9]'
                     }
                   `}
-                  aria-current={activeLink === link.name ? 'page' : undefined}
                   role="menuitem"
+                  end={link.path === '/'}
                 >
                   {link.name}
-                </a>
+                </NavLink>
               ))}
             </nav>
             <div className="mt-4 pt-4 border-t border-[#f0f2f5] flex flex-col gap-2">
-              {/* Mobile login dropdown (expanded inline) */}
+              {/* Mobile login dropdown */}
               <div className="flex flex-col gap-1">
                 <button
                   onClick={() => setIsLoginDropdownOpen(!isLoginDropdownOpen)}
@@ -222,22 +223,22 @@ const Navbar = () => {
                 </button>
                 {isLoginDropdownOpen && (
                   <div className="flex flex-col gap-1 pl-4 mt-1">
-                    <a
-                      href="#user-login"
-                      onClick={() => handleLinkClick('User Login')}
+                    <NavLink
+                      to="/user-login"
+                      onClick={handleLinkClick}
                       className="px-4 py-2 text-sm text-[#1e293b] hover:bg-[#f1f5f9] rounded-lg transition-colors"
                     >
                       <i className="fas fa-user mr-2 text-[#1565C0] w-4 text-center" aria-hidden="true"></i>
                       User Login
-                    </a>
-                    <a
-                      href="#admin-login"
-                      onClick={() => handleLinkClick('Admin Login')}
+                    </NavLink>
+                    <NavLink
+                      to="/admin-login"
+                      onClick={handleLinkClick}
                       className="px-4 py-2 text-sm text-[#1e293b] hover:bg-[#f1f5f9] rounded-lg transition-colors"
                     >
                       <i className="fas fa-user-shield mr-2 text-[#1565C0] w-4 text-center" aria-hidden="true"></i>
                       Admin Login
-                    </a>
+                    </NavLink>
                   </div>
                 )}
               </div>
@@ -246,7 +247,7 @@ const Navbar = () => {
         </div>
       </header>
 
-      {/* Offset spacer to prevent content from hiding behind fixed navbar */}
+      {/* Offset spacer */}
       <div className="h-16 md:h-20" aria-hidden="true"></div>
     </>
   );
