@@ -167,10 +167,10 @@ function Counter({ value, suffix = "", duration = 1400 }) {
   );
 }
 
-/* ---------------- Hero (updated text) ---------------- */
+/* ---------------- Hero (now with minimal top padding) ---------------- */
 function Hero() {
   return (
-    <section className="relative pt-16 pb-16 md:pt-20 md:pb-24 overflow-hidden bg-[#f8fafc]">
+    <section className="relative pt-0 pb-12 md:pt-2 md:pb-20 overflow-hidden bg-[#f8fafc]">
       {/* subtle pattern */}
       <svg
         className="absolute inset-0 w-full h-full opacity-[0.06] pointer-events-none"
@@ -190,9 +190,8 @@ function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-6 md:px-10 grid md:grid-cols-2 gap-14 items-center">
         <Reveal>
-          {/* ✅ UPDATED: county names now ALL CAPS exactly as in the reference */}
           <p className="font-[Inter] text-xs uppercase tracking-[0.2em] text-[#1565C0] font-semibold mb-4">
-            GARISSA · WAJIR · MANDERA · ISIOLO · TANA RIVER
+            GARISSA · WAJIR · MANDERA · ISIOLO · TANA RIVER · MARSABIT
           </p>
           <h1 className="font-[Poppins] text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-[#0b1e33] leading-[1.08] mb-6">
             Every borehole in the North East, tracked in real time.
