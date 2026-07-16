@@ -1,10 +1,10 @@
-// src/users/layout/UserDashboard.jsx
+// src/layout/admin/AdminDashboard.jsx
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Droplets,
   LayoutDashboard,
-  User,
+  Users,
   ClipboardList,
   MapPin,
   Settings,
@@ -13,52 +13,52 @@ import {
   X,
   Bell,
   ChevronDown,
-  Users,
   BarChart3,
   Globe,
   MessageSquare,
+  Shield,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
-// ====== Navigation items – water tracker only ======
+// ====== Admin navigation items ======
 const NAVIGATION = [
-  { name: "Dashboard", path: "/user/dashboard", icon: LayoutDashboard },
-  { name: "My Reports", path: "/user/reports", icon: ClipboardList },
-  { name: "Water Points", path: "/user/water-points", icon: MapPin },
-  { name: "Communities", path: "/user/communities", icon: Users },
-  { name: "Map", path: "/user/map", icon: Globe },
-  { name: "Analytics", path: "/user/analytics", icon: BarChart3 },
-  { name: "Messages", path: "/user/messages", icon: MessageSquare },
-  { name: "Profile", path: "/user/profile", icon: User },
-  { name: "Settings", path: "/user/settings", icon: Settings },
+  { name: "Dashboard", path: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Users", path: "/admin/users", icon: Users },
+  { name: "Reports", path: "/admin/reports", icon: ClipboardList },
+  { name: "Water Points", path: "/admin/water-points", icon: MapPin },
+  { name: "Map", path: "/admin/map", icon: Globe },
+  { name: "Communities", path: "/admin/communities", icon: Droplets },
+  { name: "Analytics", path: "/admin/analytics", icon: BarChart3 },
+  { name: "Messages", path: "/admin/messages", icon: MessageSquare },
+  { name: "Settings", path: "/admin/settings", icon: Settings },
 ];
 
-const CURRENT_USER = {
-  name: "Fatuma Abdi",
-  email: "fatuma@example.com",
-  role: "Community Member",
+const CURRENT_ADMIN = {
+  name: "Admin User",
+  email: "admin@newatertracker.ke",
+  role: "System Administrator",
 };
 
 const NOTIFICATIONS = [
   {
     id: 1,
-    title: "Water point reported low",
-    detail: "Borehole #14, Dertu ward",
-    time: "10m ago",
+    title: "New user registered",
+    detail: "Fatuma Abdi created an account",
+    time: "5m ago",
     unread: true,
   },
   {
     id: 2,
-    title: "Your report was verified",
-    detail: "Shallow well #7, Modogashe",
-    time: "2h ago",
+    title: "Water point reported",
+    detail: "Borehole #14, Dertu ward needs attention",
+    time: "1h ago",
     unread: true,
   },
   {
     id: 3,
-    title: "Weekly community summary",
-    detail: "3 new water points added nearby",
+    title: "System update",
+    detail: "Scheduled maintenance tonight at 2 AM",
     time: "Yesterday",
     unread: false,
   },
@@ -83,12 +83,12 @@ function useClickOutside(ref, onOutside) {
   }, [ref, onOutside]);
 }
 
-function UserDashboard() {
+function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [user] = useState(CURRENT_USER);
+  const [admin] = useState(CURRENT_ADMIN);
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
 
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ function UserDashboard() {
 
   const pageTitle = useMemo(() => {
     const match = NAVIGATION.find((item) =>
-      item.path === "/user/dashboard"
+      item.path === "/admin/dashboard"
         ? location.pathname === item.path
         : location.pathname.startsWith(item.path)
     );
@@ -112,7 +112,8 @@ function UserDashboard() {
   }, [location.pathname]);
 
   const handleLogout = () => {
-    navigate("/user-login");
+    // Clear auth tokens and redirect
+    navigate("/admin-login");
   };
 
   const markAllRead = () => {
@@ -135,7 +136,7 @@ function UserDashboard() {
         />
       )}
 
-      {/* ====== SIDEBAR – DARK BLUE (bg-[#0e4c93]) ====== */}
+      {/* ====== SIDEBAR – DARK BLUE ====== */}
       <aside
         className={`fixed top-0 left-0 z-50 h-full bg-[#0e4c93] transition-all duration-300 ease-in-out flex flex-col ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
@@ -145,11 +146,11 @@ function UserDashboard() {
         {/* Sidebar header */}
         <div className={`flex items-center h-16 border-b border-white/10 shrink-0 ${collapsed ? "justify-center px-2" : "px-6 gap-2.5"}`}>
           <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center shadow-sm shadow-black/10">
-            <Droplets className="w-4 h-4 text-white" />
+            <Shield className="w-4 h-4 text-white" />
           </div>
           {!collapsed && (
             <span className="font-[Poppins] font-semibold text-white text-sm tracking-tight">
-              NE Water Tracker
+              Admin Panel
             </span>
           )}
           <button
@@ -161,13 +162,13 @@ function UserDashboard() {
           </button>
         </div>
 
-        {/* Navigation – scrollable */}
+        {/* Navigation */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           {NAVIGATION.map((item) => (
             <NavLink
               key={item.name}
               to={item.path}
-              end={item.path === "/user/dashboard"}
+              end={item.path === "/admin/dashboard"}
               className={({ isActive }) =>
                 `group flex items-center gap-3 px-4 py-2.5 rounded-lg font-[Inter] text-sm transition-all duration-200 relative focus-visible:outline focus-visible:outline-2 focus-visible:outline-white ${
                   isActive
@@ -195,26 +196,26 @@ function UserDashboard() {
           ))}
         </nav>
 
-        {/* User card – visible on mobile only (when expanded) */}
+        {/* User card – mobile only */}
         {!collapsed && (
           <div className="block lg:hidden border-t border-white/10 px-4 py-4">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-medium font-[Inter] text-sm">
-                {user.name.charAt(0)}
+                {admin.name.charAt(0)}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-[Inter] font-medium text-sm text-white truncate">
-                  {user.name}
+                  {admin.name}
                 </p>
                 <p className="font-[Inter] text-xs text-white/50 truncate">
-                  {user.email}
+                  {admin.email}
                 </p>
               </div>
             </div>
           </div>
         )}
 
-        {/* Logout – with red accent on hover */}
+        {/* Logout */}
         <div className="border-t border-white/10 p-3 shrink-0">
           <button
             onClick={handleLogout}
@@ -231,18 +232,14 @@ function UserDashboard() {
 
       {/* ====== MAIN CONTENT ====== */}
       <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 relative ${mainMargin}`}>
-        {/* Floating collapse toggle – on the left edge of content */}
+        {/* Floating collapse toggle */}
         <div className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 z-20">
           <button
             onClick={toggleCollapse}
             className="flex items-center justify-center w-6 h-12 rounded-r-lg bg-white border border-slate-200/60 shadow-sm hover:shadow-md hover:border-[#0e4c93]/30 transition-all duration-200 text-[#1e293b]/40 hover:text-[#0e4c93]"
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {collapsed ? (
-              <ChevronRight className="w-4 h-4" />
-            ) : (
-              <ChevronLeft className="w-4 h-4" />
-            )}
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </div>
 
@@ -349,10 +346,10 @@ function UserDashboard() {
                 aria-haspopup="true"
               >
                 <div className="w-8 h-8 rounded-full bg-[#1565C0]/5 flex items-center justify-center text-[#1565C0] font-medium font-[Inter] text-sm ring-1 ring-[#1565C0]/10">
-                  {user.name.charAt(0)}
+                  {admin.name.charAt(0)}
                 </div>
                 <span className="font-[Inter] text-sm text-[#0b1e33] hidden sm:block">
-                  {user.name}
+                  {admin.name}
                 </span>
                 <ChevronDown
                   className={`w-4 h-4 text-[#1e293b]/30 transition-transform duration-200 ${
@@ -368,26 +365,26 @@ function UserDashboard() {
                 >
                   <div className="px-4 py-3 border-b border-slate-100">
                     <p className="font-[Inter] text-sm font-medium text-[#0b1e33] truncate">
-                      {user.name}
+                      {admin.name}
                     </p>
                     <p className="font-[Inter] text-xs text-[#1e293b]/50 truncate">
-                      {user.email}
+                      {admin.email}
                     </p>
                     <p className="font-[Inter] text-xs text-[#1565C0] mt-1">
-                      {user.role}
+                      {admin.role}
                     </p>
                   </div>
                   <NavLink
-                    to="/user/profile"
+                    to="/admin/profile"
                     onClick={() => setProfileOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-2.5 font-[Inter] text-sm text-[#1e293b]/70 hover:bg-[#f8fafc] hover:text-[#1e293b]"
                     role="menuitem"
                   >
-                    <User className="w-4 h-4 stroke-[1.8]" />
-                    View profile
+                    <Users className="w-4 h-4 stroke-[1.8]" />
+                    Profile
                   </NavLink>
                   <NavLink
-                    to="/user/settings"
+                    to="/admin/settings"
                     onClick={() => setProfileOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-2.5 font-[Inter] text-sm text-[#1e293b]/70 hover:bg-[#f8fafc] hover:text-[#1e293b]"
                     role="menuitem"
@@ -409,7 +406,7 @@ function UserDashboard() {
           </div>
         </header>
 
-        {/* ====== PAGE CONTENT – scrollable ====== */}
+        {/* ====== PAGE CONTENT ====== */}
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <Outlet />
         </main>
@@ -418,7 +415,7 @@ function UserDashboard() {
         <footer className="bg-white/80 backdrop-blur-sm border-t border-slate-100/80 py-4 px-6 md:px-8 shrink-0">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="font-[Inter] text-xs text-[#1e293b]/40">
-              © {new Date().getFullYear()} North Eastern Community Water Tracker
+              © {new Date().getFullYear()} North Eastern Community Water Tracker – Admin Panel
             </p>
             <div className="flex items-center gap-5">
               <a
@@ -442,4 +439,4 @@ function UserDashboard() {
   );
 }
 
-export default UserDashboard;
+export default AdminDashboard;
